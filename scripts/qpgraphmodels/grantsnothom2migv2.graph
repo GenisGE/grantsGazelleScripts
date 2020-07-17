@@ -1,0 +1,22 @@
+root	r
+label	granti	granti
+label	masai_mara	masai_mara
+label	mkomazi		mkomazi
+label	notata		notata
+label	petersii	petersii
+label	robertsii	robertsii
+edge	r_a		r	a
+edge	r_b		r	b
+edge	b_notata	b	notata
+edge	b_c		b	c
+edge	c_d		c	d
+edge	a_petersii	a	petersii
+edge	a_ancmko1	a	ancmko1
+edge	d_robertsii	d	robertsii
+edge	d_ancmam1	d	ancmam1
+edge	c_ancgranti	c	ancgranti
+admix	ancmam2		ancmam1	ancgranti
+edge	ancmam2_masai_mara	ancmam2		masai_mara
+admix	ancmko2	ancgranti	ancmko1
+edge	ancmko2_mkomazi		ancmko2		mkomazi
+edge	ancgranti_granti	ancgranti	granti

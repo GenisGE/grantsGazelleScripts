@@ -1,0 +1,15 @@
+//	Search	ranges	and	rules	file
+//	****************************
+
+[PARAMETERS]
+//#isInt? #name #dist.#min #max	
+//all Ns are in number of haploid individuals		
+1	NMK	unif	10	100000	output	bounded
+1	TADMIXMK	unif	1	24504	output	bounded
+0	QPT		unif	1e-6	0.99999	output	bounded
+
+[RULES]
+
+[COMPLEX PARAMETERS]
+0	QGR = 1 - QPT	output
+1	DUMTADMIX = TADMIXMK + 1	hide

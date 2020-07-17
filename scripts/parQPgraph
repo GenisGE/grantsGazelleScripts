@@ -1,0 +1,13 @@
+DIR: /home/genis/grants/analyses/new130320NoRecAdmix/qpgraph
+genotypename: /home/genis/grants/analyses/genotype_calling/cleanGenoData16032020/eigenstratformat/genos_final_inds_filts_with_outgroup_test1_minInd52_nochrUn_hwefilt_maf001_nopopmiss_nochr16X_norecadmx_nothomson.eigenstratgeno
+snpname: /home/genis/grants/analyses/genotype_calling/cleanGenoData16032020/eigenstratformat/genos_final_inds_filts_with_outgroup_test1_minInd52_nochrUn_hwefilt_maf001_nopopmiss_nochr16X_norecadmx_nothomson.snp
+indivname: /home/genis/grants/analyses/genotype_calling/cleanGenoData16032020/eigenstratformat/genos_final_inds_filts_with_outgroup_test1_minInd52_nochrUn_hwefilt_maf001_nopopmiss_nochr16X_norecadmx_nothomson.ind
+outpop:  NULL
+useallsnps: YES
+blgsize: 0
+forcezmode: YES
+lsqmode: YES
+diag:  .0001
+bigiter: 6
+hires: YES
+lambdascale: 1

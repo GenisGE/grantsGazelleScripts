@@ -1,0 +1,733 @@
+plotTree<-function(H1,H2,H3,D,Z,out="chimp",err=FALSE,f3=FALSE,type="D",masked=TRUE){
+
+  if(err){
+    plot(1,axes=F,col="transparent",ylim=0:1,xlim=0:1,ylab="",xlab="")
+    mtext("You must choose different H1,H2 and H3",3,1)
+    return()
+  }
+
+   
+    
+  lwd=3
+  if(!f3){
+      stat<-": D = "
+      if(type=="f4")
+          stat<-": f4 = "
+      
+      plot(1,axes=F,col="transparent",ylim=0:1,xlim=0:1,ylab="",xlab=paste(ifelse(masked,"masked","no transitions"),stat,round(D,3), "  Z = ",round(Z,2),sep=""))
+
+    lines(c(0.5,0),c(0,1),lwd=lwd)
+    lines(c(0.5,1),c(0,1),lwd=lwd)
+
+      buf<-0.03
+      m<-1/10
+    if(Z<(-3)){
+        
+        
+        arrows(3/6-m/2-buf,1-m,1/10-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+    }
+    if(Z > (3)){
+        arrows(3/6-m/2-buf,1-m,0.25-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+    }
+
+      
+  }
+  else{
+      SE<-D/Z
+      plot(1,axes=F,col="transparent",ylim=c(0.5,1),xlim=c(0,.5),ylab="",xlab=paste("F3 = ",round(D,3), "  SE = ",signif(SE,2),sep=""))
+      lines(c(0.25,0),c(0.5,1),lwd=lwd)
+  }
+  
+  lines(c(0.25,0.5),c(0.5,1),lwd=lwd)
+  lines(c(0.125,0.25),c(0.75,1),lwd=lwd)
+  mtext(c(H1,H2,H3,out),3,1,at=c(0,0.25,0.5,1))  
+}
+
+plotTreeF4<-function(A,B,C,O,X,D,Z,SE){
+
+lwd=3
+      
+    #plot(1,axes=F,col="transparent",ylim=0:1,xlim=0:1,ylab="",xlab=paste("alpha=",round(D,3), "  Z = ",round(Z,2),sep=""))
+    #lines(c(0.5,0),c(0,1),lwd=lwd)
+    #lines(c(0.5,1),c(0,1),lwd=lwd)
+    #x<-5
+    #lines(c(1/x,1/x*2),c(1-1/x*2,1),lwd=lwd)
+    #lines(c(1-1/x,1-1/x*2),c(1-1/x*2,1),lwd=lwd)
+    #lines(c(1/x*2,1-1/x*2),c(1,1),lwd=lwd,lty=2)
+
+    plot(1,axes=F,col="transparent",ylim=c(0,1),xlim=0:1,ylab="",xlab=paste("alpha=",round(D,3)," SE=",round(SE,5), "  Z = ",round(Z,2),sep=""))
+    lines(c(0.5,0),c(0,1),lwd=lwd,xpd=T)
+    lines(c(0.5,1),c(0,1),lwd=lwd,xpd=T)
+#lines(c(0.25,0.5),c(0.5,1),lwd=lwd)
+#lines(c(0.125,0.25),c(0.75,1),lwd=lwd)
+    m<-1/8
+    lines(c(m,m*2),c(1-2*m,1),lwd=lwd,xpd=T)
+    m2<-0.5-m
+    lines(c(m2,m2*2),c(1-2*m2,1),lwd=lwd,xpd=T)
+ 
+   #lines(c(m*2,m2*2),c(1,1),lwd=lwd,xpd=T,lty=2)
+    buf<-0.03
+    arrows(m*2,1,m*2+(m2-m)-buf,1,col="darkred",lwd=3,length=.1)
+    arrows(m2*2,1,m*2+(m2-m)+buf,1,col="darkred",lwd=3,length=.1)
+    text(c(0,m*2,m*2+(m2-m),m2*2,1),rep(1.1,5),c(A,B,X,C,O),xpd=T)
+    text(c(m*2+buf*4),rep(0.92,1),c(paste("alpha\n",round(D,3))),xpd=T)
+   # 
+   # m<-1/10
+   # arrows(3/6-m/2-buf,1-m,1/10-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+   # arrows(3/6-m/2-buf,1-m,0.25-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+   
+}
+
+
+blockJackUneven<-function(dat,theta=function(x) sum(x[,1])/sum(x[,2])){
+  dat<-dat[dat[,3]>0,]
+  nblocks<-dim(dat)[1]
+  
+  thetaEst<-theta(dat)
+  etai<-rep(0, nblocks)
+  blockSize<-dat[,3]
+  blockFrac<-blockSize/sum(blockSize)
+
+  for(i in 1:nblocks)
+    etai[i]<-theta(dat[-i,])
+#  etai<-(sum(dat[,1])-dat[,1])/(sum(dat[,2])-dat[,2])
+  meanJack<-mean(etai)
+  jackEst<-nblocks*thetaEst-sum((1-blockFrac)*etai)
+  jackVar<-(nblocks-1)/nblocks * sum((etai-meanJack)^2)
+  jackVar<-1/nblocks * sum( 1/(1/blockFrac-1) * (1/blockFrac*thetaEst-(1/blockFrac-1)*etai - nblocks*thetaEst+sum((1-blockFrac)*etai))^2)
+   
+ return(c(jackVar=jackVar,jackEst=jackEst))
+}
+
+blockJackUneven2<-function(dat,theta=function(x) sum(x[,1])/sum(x[,2])){
+  nblocks<-dim(dat)[1]
+  thetaEst<-theta(dat)
+  etai<-rep(0, nblocks)
+  blockSize<-dat[,3]
+  blockFrac<-blockSize/sum(blockSize)
+
+  for(i in 1:nblocks)
+    etai[i]<-theta(dat[-i,])
+ 
+  meanJack<-mean(etai)
+  jackEst<-nblocks*thetaEst-sum((1-blockFrac)*etai)
+  jackVar<-(nblocks-1)/nblocks * sum((etai-meanJack)^2)
+  jackVar<-1/nblocks * sum( 1/(1/blockFrac-1) * (1/blockFrac*thetaEst-(1/blockFrac-1)*etai - nblocks*thetaEst+sum((1-blockFrac)*etai))^2)
+  
+ return(c(jackVar=jackVar,jackEst=jackEst))
+}
+
+
+getDorg<-function(x,freq,siteInfo){
+
+
+ f<-freq[,x]
+ keep1<-rowSums(is.na(f))==0
+
+ ##n<-(f[,3]-f[,4])*(f[,1]-f[,4])
+ #d<-(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,4]-2*f[,1]*f[,4])
+ 
+ n<-(f[,3]-f[,4])*(f[,2]-f[,1])
+ d<-(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+
+ res<-1
+ keep<-d>0 & keep1
+ n<-n[keep]
+ d<-d[keep]
+ est<-sum(n)/sum(d)
+ nb<-ctapply(n,siteInfo$block[keep],sum)
+ db<-ctapply(d,siteInfo$block[keep],sum)
+ lb<-ctapply(d,siteInfo$block[keep],length)
+ Z<-NA
+ se<-NA
+ estJ<-NA
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,db,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+}
+ res<-c(est,estJ,se,Z,sum(n),sum(d))
+ names(res)<-c("D","Djack","SE","Z","diff","total!!!")
+ 
+ return(res)
+}
+
+getD<-function(x,freq,siteInfo){
+
+
+ f<-freq[,x]
+ keep1<-rowSums(is.na(f))==0
+
+  if(sum(keep1)<10){
+     res<-rep(NA,8)
+     names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")  
+     return(res)
+
+ }
+ ##n<-(f[,3]-f[,4])*(f[,1]-f[,4])
+ #d<-(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,4]-2*f[,1]*f[,4])
+ f<-f[keep1,]
+ n<-(f[,3]-f[,4])*(f[,2]-f[,1])
+ # return()
+ d<-(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+#  return()
+
+ res<-1
+ keep<-d>0
+ n<-n[keep]
+ d<-d[keep]
+ est<-sum(n)/sum(d)
+ nb<-ctapply(n,siteInfo$block[keep1][keep],sum)
+ db<-ctapply(d,siteInfo$block[keep1][keep],sum)
+ lb<-ctapply(d,siteInfo$block[keep1][keep],length)
+ Z<-NA
+ se<-NA
+ estJ<-NA
+
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,db,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(n),sum(d),sum(keep),length(nb))
+ names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+ 
+ return(res)
+}
+
+
+
+getF4<-function(x,freq,siteInfo){
+
+
+ f<-freq[,x]
+ keep1<-rowSums(is.na(f))==0
+
+  if(sum(keep1)<10){
+     res<-rep(NA,8)
+     names(res)<-c("f4","f4jack","SE","Z","Nsites","Nblocks")  
+     return(res)
+
+ }
+ f<-f[keep1,]
+ n<-(f[,3]-f[,4])*(f[,2]-f[,1])
+ 
+# d<-(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+
+ est<-mean(n)
+ nb<-ctapply(n,siteInfo$block[keep1],sum)
+ #db<-ctapply(d,siteInfo$block[keep1][keep],sum)
+ lb<-ctapply(n,siteInfo$block[keep1],length)
+ Z<-NA
+ se<-NA
+ estJ<-NA
+
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,lb,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(lb),length(nb))
+ names(res)<-c("f4","f4jack","SE","Z","Nsites","Nblocks")  
+ 
+ return(res)
+}
+##########################
+getF4admix<-function(x,freq,siteInfo){
+    f<-freq[,x]
+    keep1<-rowSums(is.na(f))==0
+
+    if(sum(keep1)<10){
+        res<-rep(NA,8)
+        names(res)<-c("alpha","alphaJack","SE","Z","Nsites","Nblocks")  
+        return(res)
+    }
+    f<-f[keep1,]
+
+
+    n<-(f[,1]-f[,4])*(f[,5]-f[,3])
+    d<-(f[,1]-f[,4])*(f[,2]-f[,3])
+ 
+
+    est<-sum(n)/sum(d)
+    nb<-ctapply(n,siteInfo$block[keep1],sum)
+    db<-ctapply(d,siteInfo$block[keep1],sum)
+    lb<-ctapply(n,siteInfo$block[keep1],length)
+    Z<-NA
+    se<-NA
+    estJ<-NA
+
+    if(length(lb)>19){
+        jackRes<-blockJackUneven(cbind(nb,db,lb))
+        estJ<-jackRes[2]
+        se<-sqrt(jackRes[1])
+        Z<-est/se
+    }
+    res<-c(est,estJ,se,Z,sum(lb),length(nb))
+    names(res)<-c("alpha","alphaJack","SE","Z","Nsites","Nblocks")  
+ 
+    return(res)
+    
+}
+#######################
+
+pickOne<-function(x,unknown,freq,siteInfo,type="D"){
+    if(is.numeric(x))
+        x<-colnames(freq)[x]
+
+    notX<-colnames(freq)[!colnames(freq)%in%x[-unknown]]
+
+    pops<-x
+    fun<-function(x){
+        pops[unknown]<-x
+        if(type=="f4")
+            getF4(pops,freq=freq,siteInfo=siteInfo)
+        else if(type=="D")
+            getD(pops,freq=freq,siteInfo=siteInfo)
+        else if(type=="f4admix")
+            getF4admix(pops,freq=freq,siteInfo=siteInfo)
+        
+    }
+    m<-multicore::mclapply(notX,fun,mc.cores=12)
+    res<-remix:::rbind.list(m)
+    rownames(res)<-notX
+    res 
+#t(sapply(notX,fun))
+}
+
+
+pplot<-function(arrow=1,lwd=2){
+    par(mar=c(1,1,1,1))
+    plot(1,axes=F,col="transparent",ylim=c(0,1),xlim=0:1,ylab="")
+    lines(c(0.5,0),c(0,1),lwd=lwd,xpd=T)
+    lines(c(0.5,1),c(0,1),lwd=lwd,xpd=T)
+#lines(c(0.25,0.5),c(0.5,1),lwd=lwd)
+#lines(c(0.125,0.25),c(0.75,1),lwd=lwd)
+    m<-1/6
+    lines(c(m,m*2),c(1-2*m,1),lwd=lwd,xpd=T)
+    m2<-m*2
+    lines(c(m2,m2*2),c(1-2*m2,1),lwd=lwd,xpd=T)
+    buf<-0.03
+    if(arrow==2){
+        arrows(4/6-m/2-buf,1-m,1/6-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+    }
+    if(arrow==1){
+        arrows(4/6-m/2-buf,1-m,2/6-m/2+buf,1-m,col="darkred",lwd=3,length=.1)
+    }
+
+
+}
+
+
+plotPick<-function(x,order=T,color=1,xlab="D stat",cex=2,xlim,...){
+    if(class(x)!="matrix"){
+
+        plot(1,main="plot pict need matrix")
+        return;
+    }
+    ord<-order(x[,2],decreasing = TRUE)
+    x<-x[ord,,drop=FALSE]
+    color<-color[ord]
+    par(mar=c(5.1 ,8.1, 4.1 ,2.1))
+    #plot(x[,"D"],1:nrow(x),pch=16,axes=F,ylab="",...)
+    #    axis(1)
+    if(missing(xlim))
+        xlim<-range(x[,2][is.finite(x[,2])])
+    d<-dotchart(x[,2],pch=16,color="black",xlab=xlab,xlim=xlim,cex=cex,...)
+
+   # plot(x[,2],1:nrow(x),pch=16,color="black",xlab=xlab,...)
+   # abline(h=1:nrow(x),lty=2,col= grey(0.1)) 
+    start1<-x[,2]-x[,"SE"]*1
+    start3<-x[,2]-x[,"SE"]*3
+    stop1<-x[,2]+x[,"SE"]*1
+    stop3<-x[,2]+x[,"SE"]*3
+    if(!missing(xlim)){
+        ran<-diff(xlim)*0.04
+        start1<-sapply(start1,function(x)max(x,xlim[1]-ran))
+        start3<-sapply(start3,function(x)max(x,xlim[1]-ran))
+        start1<-sapply(stop1,function(x)max(x,xlim[2]-ran))
+        start3<-sapply(stop1,function(x)max(x,xlim[2]-ran))
+        
+    }    
+    segments(start1,1:nrow(x),stop1,1:nrow(x),lwd=3,xpd=T)
+    segments(start3,1:nrow(x),stop3,1:nrow(x),lwd=1,xpd=T)
+    points(x[,2],1:nrow(x),pch=16,col=color,cex=cex*1.2,xpd=T,...)
+    abline(v=0,lty=2)
+}
+
+makeConclusion<-function(res,H1,H2,H3,H4){
+   
+Z<-res["Z"]
+  
+
+    textoutput<-""
+    if(abs(Z)>3 & abs(Z)<6)
+      textoutput<-paste(textoutput,"There is some evidence for rejecting the tree. ")
+    if(abs(Z)>6)
+      textoutput<-paste(textoutput,"There is strong evidence for rejecting the tree. ")
+    if(abs(Z)<3 )
+      textoutput<-paste(textoutput,"There is no evidence for rejecting the tree. ")
+    if(Z>0 & abs(Z)>3)
+      textoutput<-paste(textoutput,H3,"is closer to", H2,"than it is to",H1)
+    if(Z<0 & abs(Z)>3)
+      textoutput<-paste(textoutput,H3,"is closer to", H1,"than it is to",H2)
+
+    
+    cat(textoutput)
+
+
+}
+
+
+
+
+getF3<-function(x,freq,siteInfo,mis){
+   f<-freq[,x]
+   if(missing(mis)){
+       keep1<-rowSums(is.na(f))==0
+   }     
+   else{
+       keep1<-!is.na(freq[,x[mis]])
+       
+   }     
+  f<-f[keep1,]
+   if(sum(keep1)<10){
+       res<-rep(NA,8)
+       names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+       return(res)
+   }
+   n<-(f[,1]-f[,3])*(f[,2]-f[,3])
+   ## return()
+   d<-2*f[,3]*(1-f[,3])
+     #(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+#  return()
+   res<-1
+   keep<-d>=0
+   n<-n[keep]
+   d<-d[keep]
+   est<-sum(n)/sum(d)
+   nb<-ctapply(n,siteInfo$block[keep1][keep],sum)
+   db<-ctapply(d,siteInfo$block[keep1][keep],sum)
+   lb<-ctapply(d,siteInfo$block[keep1][keep],length)
+   Z<-NA
+   se<-NA
+   estJ<-NA
+  
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,db,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(n),sum(d),sum(keep),length(nb))
+ names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+
+ return(res)
+}
+
+library(Rcpp)
+cppFunction('
+  NumericVector f3n(NumericVector f1, NumericVector f2, NumericVector f3) {
+    int n = f1.size();
+    NumericVector out(n);
+
+    for(int i = 0; i < n; ++i) {
+      out[i] = (f1[i]-f3[i])*(f2[i]-f3[i]);
+    }
+    return out;
+  }
+')
+
+
+getF3Nfast<-function(x,freq,siteInfo,N=c(),mis){
+   f<-freq[,x]
+ #  return()
+  
+   if(missing(mis)){
+       keep1<-rowSums(is.na(f))==0
+   }     
+   else{
+       keep1<-!is.na(freq[,x[mis]]) 
+       
+   }     
+    
+   f<-f[keep1,]
+   if(sum(keep1)<10){
+       res<-rep(NA,8)
+       names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+       return(res)
+   }
+
+   if(length(N)>1)
+       n<-(f[,1]-f[,3])*(f[,2]-f[,3]) - f[,3]*(1-f[,3]) / (N[keep1]-1)
+   else
+       n<-f3n(f[,1],f[,2],f[,3])
+   
+   d<-2*f[,3]*(1-f[,3])
+     #(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+#  return()
+   res<-1
+   keep<-d>=0
+   n<-n[keep]
+   d<-d[keep]
+   est<-sum(n)/sum(d)
+   nb<-ctapply(n,siteInfo$block[keep1][keep],sum)
+   db<-ctapply(d,siteInfo$block[keep1][keep],sum)
+   lb<-ctapply(d,siteInfo$block[keep1][keep],length)
+   Z<-NA
+   se<-NA
+   estJ<-NA
+   return()
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,db,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(n),sum(d),sum(keep),length(nb))
+ names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+
+ return(res)
+}
+
+
+getF3N<-function(x,freq,siteInfo,N=c(),mis){
+   f<-freq[,x]
+   if(missing(mis)){
+       keep1<-rowSums(is.na(f))==0
+   }     
+   else{
+       keep1<-!is.na(freq[,x[mis]]) 
+       
+   }     
+  f<-f[keep1,]
+   if(sum(keep1)<10){
+       res<-rep(NA,8)
+       names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+       return(res)
+   }
+   if(length(N)>1)
+       n<-(f[,1]-f[,3])*(f[,2]-f[,3]) - f[,3]*(1-f[,3]) / (N[keep1]-1)
+   else
+       n<-(f[,1]-f[,3])*(f[,2]-f[,3])
+   ## return()
+   d<-2*f[,3]*(1-f[,3])
+     #(f[,3]+f[,4]-2*f[,3]*f[,4])*(f[,1]+f[,2]-2*f[,1]*f[,2])
+#  return()
+   res<-1
+   keep<-d>=0
+   n<-n[keep]
+   d<-d[keep]
+   est<-sum(n)/sum(d)
+   nb<-ctapply(n,siteInfo$block[keep1][keep],sum)
+   db<-ctapply(d,siteInfo$block[keep1][keep],sum)
+   lb<-ctapply(d,siteInfo$block[keep1][keep],length)
+   Z<-NA
+   se<-NA
+   estJ<-NA
+  
+ if(length(lb)>19){
+     jackRes<-blockJackUneven(cbind(nb,db,lb))
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(n),sum(d),sum(keep),length(nb))
+ names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+
+ return(res)
+}
+
+
+
+
+
+
+getF3fast<-function(siteInfo,d,f13,f133,f2){
+    ##5
+    keep1<-!is.na(f2)
+    ##8
+    if(sum(keep1)<10){
+        res<-rep(NA,8)
+        names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+        return(res)
+    }
+    n<-f13*f2-f133
+    ##9
+    n<-n[keep1]
+    d<-d[keep1]
+    sb<-siteInfo$block[keep1]
+    est<-sum(n)/sum(d)
+    ##13
+    nb<-ctapply(n,sb,sum)
+    db<-ctapply(d,sb,sum)
+    lb<-ctapply(d,sb,length)
+    Z<-NA
+    se<-NA
+    estJ<-NA
+    ##17
+    if(length(lb)>19){
+        jackRes<-blockJackUneven(cbind(nb,db,lb))
+        estJ<-jackRes[2]
+        se<-sqrt(jackRes[1])
+        Z<-est/se
+    }
+    res<-c(est,estJ,se,Z,sum(n),sum(d),sum(keep1),length(nb))
+    names(res)<-c("D","Djack","SE","Z","diff","total","Nsites","Nblocks")
+  
+    ##20
+    return(res)
+}
+
+#x<-      IND;unknown<-mm;frq=freq[,keep];siteI=siteInfo;N=N
+pickOneF3<-function(x,unknown,frq,siteI,N){
+ if(is.numeric(x))
+     x<-colnames(frq)[x]
+
+ notX<-colnames(frq)[!colnames(frq)%in%x[-unknown]]
+
+ pops<-x
+ keep<-rowSums(is.na(frq[,x[-unknown]]))==0
+ frq<-frq[keep,]
+ siteI<-siteI[keep,]
+ if(length(N)>1)
+ N<-N[keep]
+# keep<-!is.na(frq[,notX])
+# colnames(keep)<-notX
+ fun<-function(z){
+     pops[unknown]<-z
+     getF3N(pops,freq=frq,siteInfo=siteI,N=N,mis=unknown)
+ }
+ m<-multicore::mclapply(notX,fun,mc.cores=12)
+ res<-remix:::rbind.list(m)
+ rownames(res)<-notX
+ res
+
+}
+
+
+
+pickOneF3fast<-function(x,unknown,frq,siteI){
+ if(is.numeric(x))
+     x<-colnames(frq)[x]
+
+ notX<-colnames(frq)[!colnames(frq)%in%x[-unknown]]
+
+ pops<-x
+ keep<-rowSums(is.na(frq[,x[-unknown]]))==0
+ frq<-frq[keep,]
+ siteI<-siteI[keep,]
+
+# keep<-!is.na(frq[,notX])
+# colnames(keep)<-notX
+ d<-2*frq[,x[3]]*(1-frq[,x[3]])
+ f13<-(frq[,x[1]]-frq[,x[3]])
+ f133<-f13*frq[,x[3]]
+ fun<-function(z){
+     pops[unknown]<-z
+     getF3fast(siteInfo=siteI,d=d,f13=f13,f133=f133,f2=frq[,z])
+ }
+ m<-multicore::mclapply(notX,fun,mc.cores=12)
+ res<-remix:::rbind.list(m)
+ rownames(res)<-notX
+ res
+
+}
+ 
+pickOneF3sig<-function(x,freq,siteInfo,N){
+ if(is.numeric(x))
+     x<-colnames(freq)[x]
+
+ notX<-colnames(freq)[!colnames(freq)%in%x]
+
+ pops<-rep(NA,4)
+ pops[-3]<-x
+     fun<-function(x){
+         pops[3]<-x
+         getF3pair(pops,freq=freq,siteInfo=siteInfo,N=N)
+     }
+m<-multicore::mclapply(notX,fun,mc.cores=12)
+res<-remix:::rbind.list(m)
+rownames(res)<-notX
+res
+#t(sapply(notX,fun))
+}
+ 
+
+
+
+
+
+
+
+
+
+
+getF3pair<-function(x,freq,siteInfo,N){
+ f<-freq[,x]
+ ##X<-c(H1,H21,H22,Out)
+
+
+{ if(N>1){
+     n1<-(f[,1]-f[,4])*(f[,3]-f[,4])- f[,4]*(1-f[,4]) / (N-1)
+     n2<-(f[,2]-f[,4])*(f[,3]-f[,4])- f[,4]*(1-f[,4]) / (N-1)
+ }
+ else{
+     n1<-(f[,1]-f[,4])*(f[,3]-f[,4])
+     n2<-(f[,2]-f[,4])*(f[,3]-f[,4])
+ }}
+ d<-2*f[,4]*(1-f[,4])
+
+ keep1<-rowSums(is.na(f[,c(3,4)]))==0 & d>=0
+ if(sum(keep1)<10){
+     res<-rep(NA,8)
+     names(res)<-c("D","Djack","SE","Z","diff1","total1","diff2","total2")
+     return(res)
+ }
+
+ keepN1<-!is.na(n1) & keep1
+ keepN2<-!is.na(n2) & keep1
+
+ fun<-function(x){
+     if(all(is.na(x)))
+         return(NA)
+     sum(x,na.rm=T)
+ }
+ est<-sum(n1[keepN1])/sum(d[keepN1]) - sum(n2[keepN2])/sum(d[keepN2])
+ nb1<-ctapply(n1[keep1],siteInfo$block[keep1],fun)
+ nb2<-ctapply(n2[keep1],siteInfo$block[keep1],fun)
+
+ d1<-d
+ d1[!keepN1]<-NA
+
+ d2<-d
+ d2[!keepN2]<-NA
+ 
+ db1<-ctapply(d1[keep1],siteInfo$block[keep1],fun)
+ db2<-ctapply(d2[keep1],siteInfo$block[keep1],fun)
+
+ lb1<-ctapply(ifelse(is.na(d1[keep1]),0,1),siteInfo$block[keep1],sum)
+ lb2<-ctapply(ifelse(is.na(d2[keep1]),0,1),siteInfo$block[keep1],sum)
+
+
+ Z<-NA
+ se<-NA
+ estJ<-NA
+#blockJackUneven(cbind(n1b,db1,lb1,n1b,db2,lb2),theta=function(x)sum(x[,1],na.rm=T)/sum(x[,2],na.rm=T)-sum(x[,4],na.rm=T)/sum(x[,5],na.rm=T))
+
+
+ funn<-function(x)sum(x[,1],na.rm=T)/sum(x[,2],na.rm=T)-sum(x[,4],na.rm=T)/sum(x[,5],na.rm=T)
+ if(length(lb1)>19 & length(lb2)>19){
+     jackRes<-blockJackUneven2(cbind(nb1,db1,lb1+lb2,nb2,db2),theta=funn)
+     estJ<-jackRes[2]
+     se<-sqrt(jackRes[1])
+     Z<-est/se
+ }
+ res<-c(est,estJ,se,Z,sum(nb1,na.rm=T),sum(db1,na.rm=T),sum(nb2,na.rm=T),sum(db2,na.rm=T))
+ names(res)<-c("D","Djack","SE","Z","diff1","total1","diff2","total2")
+
+ return(res)
+}

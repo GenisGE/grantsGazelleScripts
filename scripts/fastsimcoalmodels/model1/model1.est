@@ -1,0 +1,21 @@
+
+//	Search	ranges	and	rules	file
+//	****************************
+
+[PARAMETERS]
+//#isInt? #name #dist.#min #max	
+//all Ns are in number of haploid individuals		
+1	NP	unif	100	1000000	output	bounded
+1	NN	unif	100	1000000	output	bounded
+1	NG	unif	100	1000000	output	bounded
+1	NAnc2	unif	100	1000000	output	bounded
+1	NAnc1	unif	100	1000000	output	bounded
+1	T2	unif	100	100000	output	bounded
+1	Tanc	unif	100	100000	hide	bounded
+
+[RULES]
+
+[COMPLEX PARAMETERS]
+0	RS1 = NAnc1/NAnc2	hide
+0	RS2 = NAnc2/NG	hide
+1	T1 = T2+Tanc	output
