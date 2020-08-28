@@ -17,3 +17,10 @@ for m in `seq 0 5`; do
 	    tail -1 $out_dir/m${m}/grants_treemix_m${m}_${seed}.llik | cut -f2 -d":" >> $out_dir/m${m}_all.likes
 	done
 done
+
+
+# do bootstrap in 
+for i in `seq 1 100`; do
+    treemix -i $input_file -o $out_dir/grants_treemix_m2_boot_${i} -m 2 -root thomson -n_warn 0 -k 50 -bootstrap | tee $out_dir/grants_treemix_m2_boot_${i}.log
+    zcat $out_dir/grants_treemix_m2_boot_${i}.treeout.gz | head -1 >> $out_dir/all_treemix_boot_m2.trees
+done
