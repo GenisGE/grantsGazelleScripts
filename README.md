@@ -1,8 +1,10 @@
 # Scripts used on the analysis of RAD-sequence data of Grant's gazelle
 
-These are the scripts used to perform the analyses in the paper "Admixture and the road to speciation in an African gazelle" CHANGE IF TITLE CHANGES
+These are the scripts used to perform the analyses in the paper "Vicariance followed by secondary gene flow in a young gazelle species complex" 
 
-I provide the scripts as they are, if you want to use them you will have to change paths and probably fix issues. If you have any questions please contact me thorugh github or at genis.erill@bio.ku.dk
+I provide the scripts as they are, if you want to use them you will have to change paths and probably fix issues. 
+
+Contact: Genis Garcia Erill genis.erill@bio.ku.dk
 
 ## Software needed
 
@@ -10,7 +12,7 @@ I provide the scripts as they are, if you want to use them you will have to chan
 SAMTOOLS
 ANGSD
 PLINK
-PCANGSD v1 (https://github.com/Rosemeis/pcangsd/releases/tag/0.973)
+PCANGSD v1
 NGSADMIX
 EVALADMIX
 TREEMIX
