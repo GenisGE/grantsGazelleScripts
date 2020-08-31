@@ -1,8 +1,0 @@
-#!/bin/bash
-
-model=$1
-run_fsc=/home/genis/grants/scripts/scripts130320NoRecAdmix/fsc_scripts/boot_inference_unfolded.sh
-
-ulimit -m 1000000
-ulimit -v 1000000
-seq 100 | parallel -P 20 bash $run_fsc $model
