@@ -12,13 +12,23 @@ Contact: Genis Garcia Erill genis.erill@bio.ku.dk
 SAMTOOLS
 ANGSD
 PLINK
-PCANGSD v1
+PCANGSD v0.973
 NGSADMIX
 EVALADMIX
 TREEMIX
 QPGRAPH
 FASTSIMCOAL2
-NGSREALTE2
+NGSRELATE2
+```
+
+# Info files:
+
+```
+infoFiles/bams_over_50bp_with_outgroup.txt: list of all bam files used.
+infoFiles/pop_info_with_outgroup.txt: individual ID, sampling locality and assigned population corresponding to each sample in bams_over_50bp_with_outgroup.txt
+infoFiles/bams_over_50bp_final_filters_subset1.txt: list of Grant's gazelle bam files after individual quality control filters.
+infoFiles/pop_info_final_filters_subset1.txt: individual ID, sampling locality and assigned population corresponding to each sample in bams_over_50bp_final_filters_subset1.
+infoFiles/blacklist_hwe_e3.txt: sites to be excluded from all analyses based on HWE equilibrium test.
 ```
 
 # Steps
