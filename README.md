@@ -11,7 +11,7 @@ Contact: Genis Garcia Erill genis.erill@bio.ku.dk
 ```
 SAMTOOLS
 ANGSD
-PLINK
+PLINK v 1.9
 PCANGSD v0.973
 NGSADMIX
 EVALADMIX
