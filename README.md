@@ -21,7 +21,7 @@ FASTSIMCOAL2
 NGSRELATE2
 ```
 
-# Info files:
+## Info files:
 
 ```
 infoFiles/bams_over_50bp_with_outgroup.txt: list of all bam files used.
