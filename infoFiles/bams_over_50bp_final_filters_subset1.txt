@@ -38,19 +38,14 @@
 /home/genis/grants/data/bamfiles/315.bam
 /home/genis/grants/data/bamfiles/316.bam
 /home/genis/grants/data/bamfiles/317.bam
-/home/genis/grants/data/bamfiles/318.bam
-/home/genis/grants/data/bamfiles/562.bam
-/home/genis/grants/data/bamfiles/2825.bam
 /home/genis/grants/data/bamfiles/2827.bam
 /home/genis/grants/data/bamfiles/2828.bam
 /home/genis/grants/data/bamfiles/2830.bam
 /home/genis/grants/data/bamfiles/2831.bam
 /home/genis/grants/data/bamfiles/2832.bam
 /home/genis/grants/data/bamfiles/2834.bam
-/home/genis/grants/data/bamfiles/2835.bam
 /home/genis/grants/data/bamfiles/2838.bam
 /home/genis/grants/data/bamfiles/2840.bam
-/home/genis/grants/data/bamfiles/2842.bam
 /home/genis/grants/data/bamfiles/3713.bam
 /home/genis/grants/data/bamfiles/3714.bam
 /home/genis/grants/data/bamfiles/3715.bam
@@ -65,9 +60,6 @@
 /home/genis/grants/data/bamfiles/3920.bam
 /home/genis/grants/data/bamfiles/3922.bam
 /home/genis/grants/data/bamfiles/3923.bam
-/home/genis/grants/data/bamfiles/4055.bam
-/home/genis/grants/data/bamfiles/4056.bam
-/home/genis/grants/data/bamfiles/4057.bam
 /home/genis/grants/data/bamfiles/4090.bam
 /home/genis/grants/data/bamfiles/4091.bam
 /home/genis/grants/data/bamfiles/4092.bam
@@ -105,6 +97,4 @@
 /home/genis/grants/data/bamfiles/8371.bam
 /home/genis/grants/data/bamfiles/8372.bam
 /home/genis/grants/data/bamfiles/8783.bam
-/home/genis/grants/data/bamfiles/8987.bam
-/home/genis/grants/data/bamfiles/3722_1.bam
 /home/genis/grants/data/bamfiles/4105_1.bam
